@@ -17,7 +17,7 @@ Add Sprockets-style require directives to your `.coffee` and `.js` files to incl
 #= require dependency
 ```
 
-or `//= require dependency` in JavaScript. See [Snockets' readme](https://github.com/TrevorBurnham) for more information.
+or `//= require dependency` in JavaScript. See [Snockets' readme](https://github.com/TrevorBurnham/snockets) for more information.
 
 ## Compilation
 
