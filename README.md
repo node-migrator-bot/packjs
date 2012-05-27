@@ -36,20 +36,21 @@ Use `packjs` command from your terminal to compile (and minify) your scripts. Ty
     -V, --version             output the version number
     -h, --help                output usage information
 
-  Examples:
-
-    Compile with dependencies and minify a single file,
-    then output it to STDOUT:
-    > packjs --minify --input coffee/main.coffee
-
-    Output the compiled JavaScript into a particular file:
-    > packjs --input coffee/main.coffee > ../public/js/main.js
-
-    Watch a folder recursively and recompile on each change,
-    note that -o (output) option is required:
-    > packjs --minify --watch coffee/ --output ../public/js/
-
 ```
+
+### Examples
+
+Compile with dependencies and minify a single file, then output it to `STDOUT`:
+
+    $ packjs --minify --input coffee/main.coffee
+
+Output the compiled JavaScript into a particular file:
+
+    $ packjs --input coffee/main.coffee > ../public/js/main.js
+
+Watch a folder recursively and recompile on each change, note that `-o` (output) option is required in this case:
+
+    $ packjs --minify --watch coffee/ --output ../public/js/
 
 ## License
 
