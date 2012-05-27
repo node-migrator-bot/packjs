@@ -14,7 +14,13 @@ path = require('path');
 
 dispatcher = new events.EventEmitter;
 
-program.version('0.0.2').option('-w, --watch <directory>', 'Directory to watch file changes within').option('-o, --output <directory>', 'Directory to output changed files').option('-i, --input <file>', 'Input file').option('-m, --minify', 'Minify the JavaScript output').parse(process.argv);
+program.version('0.0.4').option('-w, --watch <directory>', 'Directory to watch file changes within').option('-o, --output <directory>', 'Directory to output changed files').option('-i, --input <file>', 'Input file').option('-m, --minify', 'Minify the JavaScript output');
+
+program.on('--help', function() {
+  return console.log("----------------------------------------------------------------\n\n  Examples:\n\n    Compile with dependencies and minify a single file,\n    then output it to STDOUT:\n    > packjs --minify --input coffee/main.coffee\n\n    Output the compiled JavaScript into a particular file:\n    > packjs --input coffee/main.coffee > ../public/js/main.js\n\n    Watch a folder recursively and recompile on each change,\n    note that -o (output) option is required:\n    > packjs --minify --watch coffee/ --output ../public/js/");
+});
+
+program.parse(process.argv);
 
 config = {
   minify: !!program.minify,
@@ -35,12 +41,11 @@ merge = {
     outputFile = path.resolve(config.output, path.basename(file, '.coffee')) + '.js';
     if (config.output) {
       return fs.writeFile(outputFile, result, function(err) {
-        var now;
         if (err) {
-          console.log(err);
+          throw err;
+        } else {
+          console.log("[" + (that.formatTime()) + "] Updated " + (path.basename(outputFile)));
         }
-        now = new Date;
-        console.log("[" + (that.padZero(now.getHours())) + ":" + (that.padZero(now.getMinutes())) + ":" + (that.padZero(now.getSeconds())) + "] Updated " + outputFile);
         return typeof callback === "function" ? callback() : void 0;
       });
     } else {
@@ -61,32 +66,42 @@ merge = {
   watchDir: function(directory, callback) {
     var that;
     that = this;
-    fs.readdir(directory, function(err, files) {
-      var file, fullPath, _i, _len, _results;
-      _results = [];
+    return fs.readdir(directory, function(err, files) {
+      var file, fullPath, _fn, _i, _len;
+      if (err) {
+        throw err;
+      }
+      _fn = function(fullPath) {
+        return fs.stat(fullPath, function(err, stats) {
+          if (err) {
+            throw err;
+          }
+          if (stats.isDirectory()) {
+            return merge.watchDir(fullPath, callback);
+          } else {
+            if (path.dirname(fullPath) === path.resolve(config.watch)) {
+              return dispatcher.emit('topLevelFile:added', fullPath);
+            }
+          }
+        });
+      };
       for (_i = 0, _len = files.length; _i < _len; _i++) {
         file = files[_i];
         fullPath = path.resolve(directory, file);
-        _results.push((function(fullPath) {
-          return fs.stat(fullPath, function(err, stats) {
-            if (stats.isDirectory()) {
-              return merge.watchDir(fullPath, callback);
-            } else {
-              if (path.dirname(fullPath) === path.resolve(config.watch)) {
-                return dispatcher.emit('topLevelFile:added', fullPath);
-              }
-            }
-          });
-        })(fullPath));
+        _fn(fullPath);
       }
-      return _results;
-    });
-    return fs.watch(directory, function(event, fileName) {
-      return typeof callback === "function" ? callback() : void 0;
+      return fs.watch(directory, function(event, fileName) {
+        return typeof callback === "function" ? callback() : void 0;
+      });
     });
   },
   padZero: function(number) {
     return (number < 10 ? '0' : '') + number;
+  },
+  formatTime: function() {
+    var now;
+    now = new Date;
+    return "" + (this.padZero(now.getHours())) + ":" + (this.padZero(now.getMinutes())) + ":" + (this.padZero(now.getSeconds()));
   },
   topLevelFiles: []
 };
@@ -98,7 +113,7 @@ dispatcher.on('mode:compile', function(params) {
 });
 
 dispatcher.on('mode:watch', function(params) {
-  if (!path.existsSync(config.output)) {
+  if (!fs.existsSync(config.output)) {
     fs.mkdirSync(config.output);
   }
   return merge.watchDir(params.directory, function() {
@@ -125,3 +140,7 @@ if (program.watch) {
     file: program.input
   });
 }
+
+process.on('uncaughtException', function(err) {
+  return console.log("Error:\n" + err.message);
+});
