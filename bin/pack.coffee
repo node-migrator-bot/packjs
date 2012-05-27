@@ -62,7 +62,6 @@ merge =
               dispatcher.emit 'topLevelFile:added', fullPath if path.dirname(fullPath) is path.resolve(config.watch)
 
     fs.watch directory, (event, fileName) ->
-      console.log 'Here'
       callback?()
 
   padZero: (number) ->
@@ -75,7 +74,6 @@ dispatcher.on 'mode:compile', (params) ->
     dispatcher.emit 'exit'
 
 dispatcher.on 'mode:watch', (params) ->
-
   unless path.existsSync config.output
     fs.mkdirSync config.output
 

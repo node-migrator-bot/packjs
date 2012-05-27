@@ -82,7 +82,6 @@ merge = {
       return _results;
     });
     return fs.watch(directory, function(event, fileName) {
-      console.log('Here');
       return typeof callback === "function" ? callback() : void 0;
     });
   },
