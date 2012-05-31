@@ -113,7 +113,7 @@ dispatcher.on('mode:compile', function(params) {
 });
 
 dispatcher.on('mode:watch', function(params) {
-  if (!fs.existsSync(config.output)) {
+  if (!path.existsSync(config.output)) {
     fs.mkdirSync(config.output);
   }
   return merge.watchDir(params.directory, function() {

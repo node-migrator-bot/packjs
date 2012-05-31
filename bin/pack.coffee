@@ -103,7 +103,7 @@ dispatcher.on 'mode:compile', (params) ->
     dispatcher.emit 'exit'
 
 dispatcher.on 'mode:watch', (params) ->
-  unless fs.existsSync config.output
+  unless path.existsSync config.output
     fs.mkdirSync config.output
 
   merge.watchDir params.directory, ->
