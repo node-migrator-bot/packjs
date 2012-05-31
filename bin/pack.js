@@ -14,7 +14,7 @@ path = require('path');
 
 dispatcher = new events.EventEmitter;
 
-program.version('0.0.4').option('-w, --watch <directory>', 'Directory to watch file changes within').option('-o, --output <directory>', 'Directory to output changed files').option('-i, --input <file>', 'Input file').option('-m, --minify', 'Minify the JavaScript output');
+program.version('0.0.5').option('-w, --watch <directory>', 'Directory to watch file changes within').option('-o, --output <directory>', 'Directory to output changed files').option('-i, --input <file>', 'Input file').option('-m, --minify', 'Minify the JavaScript output');
 
 program.on('--help', function() {
   return console.log("----------------------------------------------------------------\n\n  Examples:\n\n    Compile with dependencies and minify a single file,\n    then output it to STDOUT:\n    > packjs --minify --input coffee/main.coffee\n\n    Output the compiled JavaScript into a particular file:\n    > packjs --input coffee/main.coffee > ../public/js/main.js\n\n    Watch a folder recursively and recompile on each change,\n    note that -o (output) option is required:\n    > packjs --minify --watch coffee/ --output ../public/js/");

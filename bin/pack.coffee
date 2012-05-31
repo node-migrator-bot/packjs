@@ -9,7 +9,7 @@ path     = require 'path'
 dispatcher = new events.EventEmitter
 
 program
-  .version('0.0.4')
+  .version('0.0.5')
   .option('-w, --watch <directory>',  'Directory to watch file changes within')
   .option('-o, --output <directory>', 'Directory to output changed files')
   .option('-i, --input <file>',       'Input file')

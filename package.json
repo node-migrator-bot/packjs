@@ -1,7 +1,7 @@
 {
     "name": "packjs",
     "description": "Concatenates and minifies *.coffee and *.js files as specified via Snockets' require directive.",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": {
         "name": "Aziz Yuldoshev"
     },
