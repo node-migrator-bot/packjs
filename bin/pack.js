@@ -109,7 +109,7 @@ compiler = {
 };
 
 dispatcher.on('mode:compile', function(params) {
-  if (config.output && !path.existsSync(config.output)) {
+  if (config.output && !fs.existsSync(config.output)) {
     fs.mkdirSync(config.output);
   }
   return fs.stat(params.file, function(err, stats) {
@@ -155,7 +155,7 @@ dispatcher.on('mode:compile', function(params) {
 });
 
 dispatcher.on('mode:watch', function(params) {
-  if (!path.existsSync(config.output)) {
+  if (!fs.existsSync(config.output)) {
     fs.mkdirSync(config.output);
   }
   return compiler.watchDir(params.directory, function() {
